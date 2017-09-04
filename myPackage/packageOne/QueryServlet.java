@@ -41,26 +41,40 @@ public class QueryServlet extends HttpServlet {
           stmt = conn.createStatement();
   
           // Step 3: Execute a SQL SELECT query
-          String sqlStr = "select * from books where author = "
-               + "'" + request.getParameter("author") + "'"
-               + " and qty > 0 order by price desc";
-  
-          // Print an HTML page as the output of the query
+          String[] authorArray = request.getParameterValues("author");
+          //out.println(authorArray.length);
           out.println("<html><head><title>Query Response</title></head><body>");
           out.println("<h3>Thank you for your query.</h3>");
-          out.println("<p>You query is: " + sqlStr + "</p>"); // Echo for debugging
-          ResultSet rset = stmt.executeQuery(sqlStr);  // Send the query to the server
-  
-          // Step 4: Process the query result set
-          int count = 0;
-          while(rset.next()) {
-             // Print a paragraph <p>...</p> for each record
-             out.println("<p>" + rset.getString("author")
-                  + ", " + rset.getString("title")
-                  + ", $" + rset.getDouble("price") + "</p>");
-             count++;
+         
+          for(int x = 0; x < authorArray.length; x++)
+          {
+//        	  String sqlStr = "select * from books where author = "
+//	               + "'" + request.getParameter("author") + "'"
+//	               + " and qty > 0 order by price desc";
+        	  
+        	  String sqlStr = "select * from books where author = "
+        			  		+ "'" + authorArray[x] + "'" 
+        			  		+ " and qty > 0 order by price desc";
+	  
+	          // Print an HTML page as the output of the query
+	          out.println("<p>You query is: " + sqlStr + "</p>"); // Echo for debugging
+	          ResultSet rset = stmt.executeQuery(sqlStr);  // Send the query to the server
+	  
+	          // Step 4: Process the query result set
+	          int count = 0;
+	          while(rset.next()) {
+	             // Print a paragraph <p>...</p> for each record
+	             out.println("<p>" + rset.getString("author")
+	                  + ", " + rset.getString("title")
+	                  + ", $" + rset.getDouble("price") + "</p>");
+	             count++;
+	          }
+	          
+	          if(count == 0)
+	        	  out.println("<p>==== No record found ====</p>");
+	          else
+	        	  out.println("<p>==== " + count + " records found =====</p>");
           }
-          out.println("<p>==== " + count + " records found =====</p>");
           out.println("</body></html>");
       } catch (SQLException ex) {
          ex.printStackTrace();
