@@ -43,8 +43,8 @@ public class QueryServlet extends HttpServlet {
           // Step 3: Execute a SQL SELECT query
           String[] authorArray = request.getParameterValues("author");
           //out.println(authorArray.length);
-          out.println("<html><head><title>Query Response</title></head><body>");
-          out.println("<h3>Thank you for your query.</h3>");
+          out.println("<html><head><title>Xion EbookStore</title></head><body>");
+          out.println("<h3></h3>");
          
           for(int x = 0; x < authorArray.length; x++)
           {
@@ -57,23 +57,26 @@ public class QueryServlet extends HttpServlet {
         			  		+ " and qty > 0 order by price desc";
 	  
 	          // Print an HTML page as the output of the query
-	          out.println("<p>You query is: " + sqlStr + "</p>"); // Echo for debugging
+//	          out.println("<p>You query is: " + sqlStr + "</p>"); // Echo for debugging
 	          ResultSet rset = stmt.executeQuery(sqlStr);  // Send the query to the server
 	  
 	          // Step 4: Process the query result set
 	          int count = 0;
+	          String authorName = authorArray[x];
 	          while(rset.next()) {
 	             // Print a paragraph <p>...</p> for each record
 	             out.println("<p>" + rset.getString("author")
 	                  + ", " + rset.getString("title")
 	                  + ", $" + rset.getDouble("price") + "</p>");
 	             count++;
+	             authorName = rset.getString("author");
 	          }
 	          
 	          if(count == 0)
-	        	  out.println("<p>==== No record found ====</p>");
+	        	  out.println("<p>==== No record found for ");
 	          else
-	        	  out.println("<p>==== " + count + " records found =====</p>");
+	        	  out.println("<p>==== " + count + " records found for ");
+	          out.println(authorName + " ====</p>");
           }
           out.println("</body></html>");
       } catch (SQLException ex) {
